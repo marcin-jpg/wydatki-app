@@ -1,5 +1,21 @@
 import { startOfDay, subDays, addDays } from 'date-fns';
 
+const CURRENCY_PATTERNS = {
+  'PLN': ['zł', 'zl', 'zloty', 'złoty', 'złotych', 'zlotych', 'pln'],
+  'EUR': ['euro', 'eur', '€'],
+  'USD': ['dolar', 'dolarów', 'dolary', 'usd', '$'],
+  'GBP': ['funt', 'funtów', 'funty', 'gbp', '£'],
+  'CHF': ['frank', 'franków', 'franki', 'chf'],
+  'CZK': ['korona', 'koron', 'korony', 'czk', 'kc'],
+  'NOK': ['nok', 'korona norweska'],
+  'SEK': ['sek', 'korona szwedzka'],
+  'UAH': ['hrywna', 'hrywien', 'uah'],
+  'JPY': ['jen', 'jenów', 'jpy', '¥'],
+  'CNY': ['juan', 'yuan', 'cny'],
+  'BTC': ['bitcoin', 'btc', '₿'],
+  'ETH': ['ethereum', 'eth']
+};
+
 const POLISH_MONTHS = {
   'stycznia': 0, 'luty': 1, 'lutym': 1, 'marca': 2, 'marcu': 2,
   'kwietnia': 3, 'kwietnia': 3, 'kwietnia': 3, 'maja': 4, 'maju': 4,
@@ -36,6 +52,7 @@ export function parseTransaction(text) {
   const result = {
     type: null,
     amount: null,
+    currency: 'PLN',
     category: null,
     date: new Date().toISOString().split('T')[0],
     description: text,
@@ -58,8 +75,19 @@ export function parseTransaction(text) {
     result.type = 'expense';
   }
 
+  // Parse currency
+  for (const [currency, keywords] of Object.entries(CURRENCY_PATTERNS)) {
+    for (const keyword of keywords) {
+      if (lowerText.includes(keyword)) {
+        result.currency = currency;
+        break;
+      }
+    }
+    if (result.currency !== 'PLN') break;
+  }
+
   // Parse amount
-  const amountMatch = text.match(/(\d+(?:[.,]\d{1,2})?)\s*(?:zł|zloty|złotych|złoty|pln)?/i) || text.match(/(\d+(?:[.,]\d{1,2})?)/);
+  const amountMatch = text.match(/(\d+(?:[.,]\d{1,2})?)/);
   if (amountMatch && amountMatch[1]) {
     const amountStr = amountMatch[1].replace(',', '.');
     result.amount = parseFloat(amountStr);

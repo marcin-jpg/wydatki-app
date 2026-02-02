@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS transactions (
   user_id INTEGER NOT NULL,
   date TEXT NOT NULL,
   amount REAL NOT NULL,
+  currency TEXT DEFAULT 'PLN',
   type TEXT NOT NULL CHECK(type IN ('income', 'expense')),
   category_id INTEGER NOT NULL,
   description TEXT,

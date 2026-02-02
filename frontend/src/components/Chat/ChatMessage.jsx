@@ -1,6 +1,27 @@
 import React from 'react';
-import { formatCurrency, formatDate } from '../../utils/formatters';
+import { formatDate } from '../../utils/formatters';
 import './Chat.css';
+
+const CURRENCY_SYMBOLS = {
+  'PLN': 'zł',
+  'EUR': '€',
+  'USD': '$',
+  'GBP': '£',
+  'CHF': 'CHF',
+  'CZK': 'Kč',
+  'NOK': 'kr',
+  'SEK': 'kr',
+  'UAH': '₴',
+  'JPY': '¥',
+  'CNY': '¥',
+  'BTC': '₿',
+  'ETH': 'Ξ'
+};
+
+function formatAmount(amount, currency) {
+  const symbol = CURRENCY_SYMBOLS[currency] || currency;
+  return `${amount.toFixed(2)} ${symbol}`;
+}
 
 export function ChatMessage({ message }) {
   const { type, role, content, data } = message;
@@ -26,7 +47,7 @@ export function ChatMessage({ message }) {
                 <span className="category-badge">{data.category}</span>
                 {' '}
                 <span className={`amount ${data.type}`}>
-                  {data.type === 'income' ? '+' : '-'}{formatCurrency(data.amount)}
+                  {data.type === 'income' ? '+' : '-'}{formatAmount(data.amount, data.currency || 'PLN')}
                 </span>
               </p>
               <p className="transaction-meta">

@@ -37,8 +37,8 @@ router.post('/parse', async (req, res) => {
 
     // Create transaction
     const result = await run(
-      'INSERT INTO transactions (user_id, date, amount, type, category_id, description) VALUES (?, ?, ?, ?, ?, ?)',
-      [req.user.id, parsed.date, parsed.amount, parsed.type, category.id, parsed.description]
+      'INSERT INTO transactions (user_id, date, amount, currency, type, category_id, description) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      [req.user.id, parsed.date, parsed.amount, parsed.currency, parsed.type, category.id, parsed.description]
     );
 
     res.json({
@@ -48,6 +48,7 @@ router.post('/parse', async (req, res) => {
         id: result.id,
         date: parsed.date,
         amount: parsed.amount,
+        currency: parsed.currency,
         type: parsed.type,
         category: parsed.category,
         description: parsed.description,
