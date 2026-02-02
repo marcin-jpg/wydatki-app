@@ -59,9 +59,12 @@ export function parseTransaction(text) {
   }
 
   // Parse amount
-  const amountMatch = text.match(AMOUNT_PATTERNS[0]) || text.match(/(\d+(?:[.,]\d{1,2})?)/);
-  if (amountMatch) {
+  const amountMatch = text.match(/(\d+(?:[.,]\d{1,2})?)\s*(?:zł|zloty|złotych|złoty|pln)?/i) || text.match(/(\d+(?:[.,]\d{1,2})?)/);
+  if (amountMatch && amountMatch[1]) {
     const amountStr = amountMatch[1].replace(',', '.');
+    result.amount = parseFloat(amountStr);
+  } else if (amountMatch && amountMatch[0]) {
+    const amountStr = amountMatch[0].replace(',', '.');
     result.amount = parseFloat(amountStr);
   }
 
