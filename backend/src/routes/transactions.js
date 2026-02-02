@@ -20,14 +20,19 @@ router.post('/parse', async (req, res) => {
       return res.status(400).json({ error: 'Invalid transaction', errors: validation.errors });
     }
 
-    // Get category ID
-    const category = await get(
-      'SELECT id FROM categories WHERE name = ? AND type = ?',
+    // Get or create category
+    let category = await get(
+      'SELECT id FROM categories WHERE LOWER(name) = LOWER(?) AND type = ?',
       [parsed.category, parsed.type]
     );
 
     if (!category) {
-      return res.status(400).json({ error: `Category "${parsed.category}" not found` });
+      // Create category automatically
+      const newCat = await run(
+        'INSERT INTO categories (name, type, color, icon) VALUES (?, ?, ?, ?)',
+        [parsed.category, parsed.type, '#667eea', '📦']
+      );
+      category = { id: newCat.id };
     }
 
     // Create transaction
