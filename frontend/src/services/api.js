@@ -1,20 +1,7 @@
 import axios from 'axios';
 
-// Dynamiczny URL API - lokalnie lub z produkcji
-const getApiBase = () => {
-  // W produkcji użyj zmiennej środowiskowej
-  if (import.meta.env.VITE_API_URL) {
-    return import.meta.env.VITE_API_URL;
-  }
-  // W development'cie lokalne proxy
-  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-    return '/api';
-  }
-  // W produkcji użyj pełnego URL (jeśli backend jest na innej domenie)
-  return `${window.location.origin}/api`;
-};
-
-const API_BASE = getApiBase();
+// Backend URL
+const API_BASE = 'https://wydatki-app.onrender.com/api';
 
 const api = axios.create({
   baseURL: API_BASE
