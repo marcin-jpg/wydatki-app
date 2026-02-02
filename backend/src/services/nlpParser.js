@@ -39,8 +39,42 @@ const CATEGORY_KEYWORDS = {
 };
 
 const TYPE_PATTERNS = {
-  income: ['przychód', 'dochód', 'zarobek', 'zarobili', 'zarobiliśmy', 'wpłata', 'wpłatę', 'pensja', 'wypłata', 'bonus', 'sprzedaż', 'dochodów', 'zarabiłem', 'zarabiałem', 'dostał', 'dostałem', 'dostałam'],
-  expense: ['wydałem', 'wydałam', 'wydatki', 'wydatek', 'wydały', 'wydały', 'zapłacił', 'zapłaciłem', 'zapłaciłam', 'zapłacę', 'kupiłem', 'kupiłam', 'kupił', 'koszt', 'koszty', 'wydać', 'wydawał']
+  income: [
+    // Zarobki
+    'zarabiam', 'zarobię', 'zarobek', 'zarobki', 'zarabiłem', 'zarabiłam', 'zarobili', 'zarobiliśmy',
+    // Pensja
+    'pensja', 'pensję', 'pensji', 'wypłata', 'wypłatę', 'wynagrodzenie', 'wynagrodzenia',
+    // Przychody
+    'przychód', 'przychody', 'dochód', 'dochody', 'dochodów',
+    // Otrzymanie
+    'dostałem', 'dostałam', 'dostanę', 'otrzymałem', 'otrzymałam', 'otrzymuję',
+    // Wpłaty
+    'wpłata', 'wpłatę', 'wpływ', 'wpływy', 'przelew na konto',
+    // Sprzedaż
+    'sprzedałem', 'sprzedałam', 'sprzedaż', 'sprzedaży',
+    // Bonusy
+    'bonus', 'premia', 'premię', 'premii', 'nagroda', 'nagrodę',
+    // Zwroty
+    'zwrot', 'zwrócono', 'refund',
+    // Inne
+    'zysk', 'zyski', 'zasilenie', 'kredyt na konto'
+  ],
+  expense: [
+    // Wydatki
+    'wydałem', 'wydałam', 'wydaję', 'wydać', 'wydatek', 'wydatki', 'wydawał',
+    // Zakupy
+    'kupiłem', 'kupiłam', 'kupię', 'kupił', 'kupować', 'zakup', 'zakupy',
+    // Płatności
+    'zapłaciłem', 'zapłaciłam', 'zapłacę', 'zapłacił', 'płacę', 'płaciłem', 'opłata', 'opłaciłem',
+    // Koszty
+    'koszt', 'koszty', 'kosztowało', 'kosztuje',
+    // Rachunki
+    'rachunek', 'rachunki', 'faktura', 'faktury',
+    // Subskrypcje
+    'subskrypcja', 'abonament', 'opłata za',
+    // Inne
+    'strata', 'straty', 'wydanie', 'na', 'za'
+  ]
 };
 
 const AMOUNT_PATTERNS = [
@@ -62,16 +96,29 @@ export function parseTransaction(text) {
   // Parse type (income/expense)
   const lowerText = text.toLowerCase();
 
-  for (const type of ['income', 'expense']) {
-    const keywords = TYPE_PATTERNS[type];
-    if (keywords.some(keyword => lowerText.includes(keyword))) {
-      result.type = type;
-      break;
+  // Check income first (more specific)
+  let incomeScore = 0;
+  let expenseScore = 0;
+
+  for (const keyword of TYPE_PATTERNS.income) {
+    if (lowerText.includes(keyword)) {
+      incomeScore += keyword.length;
     }
   }
 
-  // If no type detected, assume expense
-  if (!result.type) {
+  for (const keyword of TYPE_PATTERNS.expense) {
+    if (lowerText.includes(keyword)) {
+      expenseScore += keyword.length;
+    }
+  }
+
+  // Determine type based on scores
+  if (incomeScore > expenseScore) {
+    result.type = 'income';
+  } else if (expenseScore > 0) {
+    result.type = 'expense';
+  } else {
+    // Default to expense if no keywords found
     result.type = 'expense';
   }
 
