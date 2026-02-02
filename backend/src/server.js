@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import { initializeDatabase } from './db/database.js';
+import { verifyToken } from './middleware/auth.js';
+import authRouter from './routes/auth.js';
 import transactionsRouter from './routes/transactions.js';
 import categoriesRouter from './routes/categories.js';
 import budgetsRouter from './routes/budgets.js';
@@ -14,12 +16,15 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 
-// Routes
-app.use('/api/transactions', transactionsRouter);
+// Public routes
+app.use('/api/auth', authRouter);
+
+// Protected routes
+app.use('/api/transactions', verifyToken, transactionsRouter);
 app.use('/api/categories', categoriesRouter);
-app.use('/api/budgets', budgetsRouter);
-app.use('/api/recurring', recurringRouter);
-app.use('/api/analytics', analyticsRouter);
+app.use('/api/budgets', verifyToken, budgetsRouter);
+app.use('/api/recurring', verifyToken, recurringRouter);
+app.use('/api/analytics', verifyToken, analyticsRouter);
 
 // Health check
 app.get('/health', (req, res) => {

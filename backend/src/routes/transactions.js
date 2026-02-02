@@ -37,8 +37,8 @@ router.post('/parse', async (req, res) => {
 
     // Create transaction
     const result = await run(
-      'INSERT INTO transactions (date, amount, type, category_id, description) VALUES (?, ?, ?, ?, ?)',
-      [parsed.date, parsed.amount, parsed.type, category.id, parsed.description]
+      'INSERT INTO transactions (user_id, date, amount, type, category_id, description) VALUES (?, ?, ?, ?, ?, ?)',
+      [req.user.id, parsed.date, parsed.amount, parsed.type, category.id, parsed.description]
     );
 
     res.json({
@@ -69,7 +69,8 @@ router.get('/', async (req, res) => {
                  JOIN categories c ON t.category_id = c.id`;
     const params = [];
 
-    const conditions = [];
+    const conditions = ['t.user_id = ?'];
+    params.push(req.user.id);
     if (month && year) {
       conditions.push(`strftime('%m', t.date) = ? AND strftime('%Y', t.date) = ?`);
       params.push(String(month).padStart(2, '0'), String(year));

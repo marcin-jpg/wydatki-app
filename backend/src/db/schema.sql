@@ -1,3 +1,12 @@
+-- Users table
+CREATE TABLE IF NOT EXISTS users (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  email TEXT UNIQUE NOT NULL,
+  password TEXT NOT NULL,
+  name TEXT,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Categories table
 CREATE TABLE IF NOT EXISTS categories (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -11,6 +20,7 @@ CREATE TABLE IF NOT EXISTS categories (
 -- Transactions table
 CREATE TABLE IF NOT EXISTS transactions (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
   date TEXT NOT NULL,
   amount REAL NOT NULL,
   type TEXT NOT NULL CHECK(type IN ('income', 'expense')),
@@ -18,24 +28,28 @@ CREATE TABLE IF NOT EXISTS transactions (
   description TEXT,
   is_recurring INTEGER DEFAULT 0,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (category_id) REFERENCES categories(id)
+  FOREIGN KEY (category_id) REFERENCES categories(id),
+  FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
 -- Budgets table
 CREATE TABLE IF NOT EXISTS budgets (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
   month INTEGER NOT NULL,
   year INTEGER NOT NULL,
   category_id INTEGER NOT NULL,
   amount REAL NOT NULL,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  UNIQUE(month, year, category_id),
-  FOREIGN KEY (category_id) REFERENCES categories(id)
+  UNIQUE(user_id, month, year, category_id),
+  FOREIGN KEY (category_id) REFERENCES categories(id),
+  FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
 -- Recurring transactions template table
 CREATE TABLE IF NOT EXISTS recurring_transactions (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
   name TEXT NOT NULL,
   amount REAL NOT NULL,
   type TEXT NOT NULL CHECK(type IN ('income', 'expense')),
@@ -44,7 +58,8 @@ CREATE TABLE IF NOT EXISTS recurring_transactions (
   next_date TEXT NOT NULL,
   is_active INTEGER DEFAULT 1,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (category_id) REFERENCES categories(id)
+  FOREIGN KEY (category_id) REFERENCES categories(id),
+  FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
 -- Insert default categories

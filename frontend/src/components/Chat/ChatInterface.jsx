@@ -1,11 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ChatMessage } from './ChatMessage';
 import { ChatInput } from './ChatInput';
-import { parseTransaction, getBalance } from '../../services/api';
-import { getMonthYear, formatCurrency } from '../../utils/formatters';
 import './Chat.css';
 
-export function ChatInterface() {
+export function ChatInterface({ token }) {
   const [messages, setMessages] = useState([
     {
       type: 'info',
@@ -37,21 +35,29 @@ export function ChatInterface() {
     setIsLoading(true);
 
     try {
-      const response = await parseTransaction(text);
-      const { success, transaction, error } = response.data;
+      const response = await fetch('https://wydatki-app.onrender.com/api/transactions/parse', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ text })
+      });
 
-      if (success) {
+      const data = await response.json();
+
+      if (data.success) {
         setMessages(prev => [...prev, {
           type: 'transaction',
           role: 'assistant',
           content: 'Transakcja dodana!',
-          data: transaction
+          data: data.transaction
         }]);
       } else {
         setMessages(prev => [...prev, {
           type: 'error',
           role: 'assistant',
-          content: error || 'Nie udało się przetworzyć transakcji',
+          content: data.error || 'Nie udalo sie przetworzyc transakcji',
           data: null
         }]);
       }
@@ -59,7 +65,7 @@ export function ChatInterface() {
       setMessages(prev => [...prev, {
         type: 'error',
         role: 'assistant',
-        content: 'Błąd: ' + (err.response?.data?.error || err.message),
+        content: 'Blad: ' + err.message,
         data: null
       }]);
     } finally {

@@ -1,111 +1,54 @@
-import axios from 'axios';
-
-// Backend URL
 const API_BASE = 'https://wydatki-app.onrender.com/api';
 
-const api = axios.create({
-  baseURL: API_BASE
-});
+function getHeaders() {
+  const token = localStorage.getItem('token');
+  return {
+    'Content-Type': 'application/json',
+    ...(token && { 'Authorization': `Bearer ${token}` })
+  };
+}
+
+async function apiCall(endpoint, options = {}) {
+  const response = await fetch(`${API_BASE}${endpoint}`, {
+    ...options,
+    headers: getHeaders()
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || 'API Error');
+  }
+  return { data };
+}
 
 // Transactions
 export const parseTransaction = (text) =>
-  api.post('/transactions/parse', { text });
+  apiCall('/transactions/parse', { method: 'POST', body: JSON.stringify({ text }) });
 
-export const getTransactions = (params) =>
-  api.get('/transactions', { params });
-
-export const getTransaction = (id) =>
-  api.get(`/transactions/${id}`);
-
-export const updateTransaction = (id, data) =>
-  api.put(`/transactions/${id}`, data);
-
-export const deleteTransaction = (id) =>
-  api.delete(`/transactions/${id}`);
-
-export const getMonthlyStats = (month, year) =>
-  api.get('/transactions/stats/monthly', { params: { month, year } });
+export const getTransactions = (params) => {
+  const query = new URLSearchParams(params).toString();
+  return apiCall(`/transactions?${query}`);
+};
 
 // Categories
 export const getCategories = (type) =>
-  api.get('/categories', { params: type ? { type } : {} });
-
-export const getCategory = (id) =>
-  api.get(`/categories/${id}`);
-
-export const createCategory = (data) =>
-  api.post('/categories', data);
-
-export const updateCategory = (id, data) =>
-  api.put(`/categories/${id}`, data);
-
-export const deleteCategory = (id) =>
-  api.delete(`/categories/${id}`);
+  apiCall(`/categories${type ? `?type=${type}` : ''}`);
 
 // Budgets
 export const getBudgets = (month, year) =>
-  api.get('/budgets', { params: { month, year } });
-
-export const getBudget = (id) =>
-  api.get(`/budgets/${id}`);
-
-export const createBudget = (data) =>
-  api.post('/budgets', data);
-
-export const updateBudget = (id, data) =>
-  api.put(`/budgets/${id}`, data);
-
-export const deleteBudget = (id) =>
-  api.delete(`/budgets/${id}`);
-
-export const getBudgetStatus = (month, year) =>
-  api.get('/budgets/status/month', { params: { month, year } });
-
-// Recurring
-export const getRecurringTransactions = (activeOnly = false) =>
-  api.get('/recurring', { params: { active_only: activeOnly } });
-
-export const getRecurringTransaction = (id) =>
-  api.get(`/recurring/${id}`);
-
-export const createRecurringTransaction = (data) =>
-  api.post('/recurring', data);
-
-export const updateRecurringTransaction = (id, data) =>
-  api.put(`/recurring/${id}`, data);
-
-export const deleteRecurringTransaction = (id) =>
-  api.delete(`/recurring/${id}`);
-
-export const processRecurringTransaction = (id) =>
-  api.post(`/recurring/${id}/process`);
+  apiCall(`/budgets?month=${month}&year=${year}`);
 
 // Analytics
 export const getCategoryBreakdown = (month, year) =>
-  api.get('/analytics/breakdown', { params: { month, year } });
+  apiCall(`/analytics/breakdown?month=${month}&year=${year}`);
 
 export const getTrendData = (months = 12) =>
-  api.get('/analytics/trends', { params: { months } });
+  apiCall(`/analytics/trends?months=${months}`);
 
 export const getAnalyticsMonthlyStats = (month, year) =>
-  api.get('/analytics/monthly', { params: { month, year } });
-
-export const getTopCategories = (type = 'expense', limit = 5) =>
-  api.get('/analytics/top', { params: { type, limit } });
+  apiCall(`/analytics/monthly?month=${month}&year=${year}`);
 
 export const getBalance = () =>
-  api.get('/analytics/balance');
-
-export const getDailySpending = (month, year) =>
-  api.get('/analytics/daily-spending', { params: { month, year } });
-
-export const compareMonths = (year, month1, month2) =>
-  api.get('/analytics/compare', { params: { year, month1, month2 } });
+  apiCall('/analytics/balance');
 
 export const getForecast = (month, year) =>
-  api.get('/analytics/forecast', { params: { month, year } });
-
-export const getBudgetStatusAnalytics = (month, year) =>
-  api.get('/analytics/budget-status', { params: { month, year } });
-
-export default api;
+  apiCall(`/analytics/forecast?month=${month}&year=${year}`);
