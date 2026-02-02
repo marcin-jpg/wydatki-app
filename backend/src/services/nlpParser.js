@@ -10,16 +10,16 @@ const POLISH_MONTHS = {
 };
 
 const CATEGORY_KEYWORDS = {
-  'jedzenie': ['jedzenie', 'obiad', 'lunch', 'śniadanie', 'kolacja', 'kanapka', 'pizza', 'burger', 'zapłacił', 'zapłaciłem', 'zapłaciłam', 'kupił', 'kupiłem', 'kupiłam', 'restauracja', 'bar', 'kawiarnia', 'cukiernia', 'lody'],
-  'transport': ['transport', 'paliwo', 'benzyna', 'samochód', 'taxi', 'uber', 'tramwaj', 'autobus', 'metro', 'rower', 'komunikacja', 'przejazd', 'karta', 'abonament', 'parkomat', 'bilet'],
-  'rachunki': ['rachunek', 'prąd', 'gaz', 'woda', 'internet', 'telefon', 'czynsz', 'opłata', 'abonament', 'insurance', 'ubezpieczenie', 'czynsz', 'miesiąca'],
-  'rozrywka': ['kino', 'film', 'koncert', 'rozrywka', 'bilet', 'wstęp', 'bawić', 'gra', 'grze', 'sport', 'rekreacja'],
-  'zakupy': ['zakupy', 'shopping', 'sklep', 'supermarket', 'market', 'centrum handlowe', 'ubrania', 'buty', 'odzież'],
-  'zdrowie': ['lekarz', 'apteka', 'lek', 'medyk', 'szpital', 'stomatolog', 'dentysta', 'zdrowiej', 'fitness', 'siłownia', 'trener'],
-  'edukacja': ['szkoła', 'kurs', 'nauka', 'lekcja', 'korepetycje', 'książka', 'podręcznik', 'szkolenie', 'uniwersytet'],
-  'wynagrodzenie': ['pensja', 'wynagrodzenie', 'pensję', 'wynagrodzeniu', 'pensji', 'wypłata', 'wypłatę', 'salary'],
-  'bonusy': ['bonus', 'premię', 'premii', 'premia'],
-  'sprzedaż': ['sprzedaż', 'sprzedaży', 'sprzedałem', 'sprzedałam', 'dochód', 'przychód'],
+  'Jedzenie': ['jedzenie', 'obiad', 'lunch', 'śniadanie', 'kolacja', 'kanapka', 'pizza', 'burger', 'zapłacił', 'zapłaciłem', 'zapłaciłam', 'kupił', 'kupiłem', 'kupiłam', 'restauracja', 'bar', 'kawiarnia', 'cukiernia', 'lody'],
+  'Transport': ['transport', 'paliwo', 'benzyna', 'samochód', 'taxi', 'uber', 'tramwaj', 'autobus', 'metro', 'rower', 'komunikacja', 'przejazd', 'karta', 'abonament', 'parkomat', 'bilet'],
+  'Rachunki': ['rachunek', 'prąd', 'gaz', 'woda', 'internet', 'telefon', 'czynsz', 'opłata', 'abonament', 'insurance', 'ubezpieczenie', 'czynsz', 'miesiąca'],
+  'Rozrywka': ['kino', 'film', 'koncert', 'rozrywka', 'bilet', 'wstęp', 'bawić', 'gra', 'grze', 'sport', 'rekreacja'],
+  'Zakupy': ['zakupy', 'shopping', 'sklep', 'supermarket', 'market', 'centrum handlowe', 'ubrania', 'buty', 'odzież'],
+  'Zdrowie': ['lekarz', 'apteka', 'lek', 'medyk', 'szpital', 'stomatolog', 'dentysta', 'zdrowiej', 'fitness', 'siłownia', 'trener'],
+  'Edukacja': ['szkoła', 'kurs', 'nauka', 'lekcja', 'korepetycje', 'książka', 'podręcznik', 'szkolenie', 'uniwersytet'],
+  'Wynagrodzenie': ['pensja', 'wynagrodzenie', 'pensję', 'wynagrodzeniu', 'pensji', 'wypłata', 'wypłatę', 'salary'],
+  'Bonusy': ['bonus', 'premię', 'premii', 'premia'],
+  'Sprzedaż': ['sprzedaż', 'sprzedaży', 'sprzedałem', 'sprzedałam', 'dochód', 'przychód'],
 };
 
 const TYPE_PATTERNS = {
